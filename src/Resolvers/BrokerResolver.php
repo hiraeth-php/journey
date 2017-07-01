@@ -63,7 +63,7 @@ class BrokerResolver implements Journey\Resolver
 				$response = $response->withStatus(404);
 
 			} else {
-				$args = array();
+				$args = [':router' => $router];
 
 				foreach ($params as $key => $value) {
 					$args[':' . $key] = $value;
