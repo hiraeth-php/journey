@@ -23,10 +23,11 @@ class BrokerResolver implements Journey\Resolver
 	/**
 	 *
 	 */
-	public function execute(Journey\Router $router, $target, array $params = array())
+	public function execute(Journey\Router $router, $target)
 	{
 		$request  = $router->getRequest();
 		$response = $router->getResponse();
+		$params   = $request->getAttributes();
 		$query    = $request->getQueryParams();
 
 		if (preg_match_all('#{([^}]+)}#', $target, $matches)) {
@@ -56,7 +57,7 @@ class BrokerResolver implements Journey\Resolver
 			$response = $response->withStatus(404);
 
 		} else {
-			$controller = $this->broker->make($class, ['Journey\Router' => $router]);
+			$controller = $this->broker->make($class, [':router' => $router]);
 
 			if (!is_callable([$controller, $method])) {
 				$response = $response->withStatus(404);
@@ -68,7 +69,7 @@ class BrokerResolver implements Journey\Resolver
 					$args[':' . $key] = $value;
 				}
 
-				$response = $this->handle($this->broker->execute([$class, $method], $args), $response);
+				$response = $this->handle($this->broker->execute([$controller, $method], $args), $response);
 			}
 		}
 
