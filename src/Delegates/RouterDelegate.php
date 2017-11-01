@@ -68,9 +68,14 @@ class RouterDelegate implements Hiraeth\Delegate
 
 		foreach (array_keys($configs) as $config) {
 			$transformers = $this->config->get($config, 'journey.transformers', array());
+			$masks        = $this->config->get($config, 'journey.masks', array());
 
 			foreach ($transformers as $type => $transformer) {
 				$router->addTransformer($type, $broker->make($transformer));
+			}
+
+			foreach ($masks as $from => $to) {
+				$router->addMask($from, $to);
 			}
 		}
 
