@@ -40,6 +40,10 @@ class StringTransformer implements Journey\Transformer
 	 */
 	public function toUrl($name, $value, array $context = array())
 	{
-		return $this->inflector->hyphenate(preg_replace('#[^a-zA-Z0-9]#', '', ucwords($value)));
+		$value = preg_replace('#\s+#', ' ', $value);
+		$value = preg_replace('#[^a-zA-Z0-9\s]#', '', $value);
+		$value = strtolower($value);
+
+		return $this->inflector->hyphenate($value);
 	}
 }
